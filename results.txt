@@ -1,0 +1,8 @@
+Plant Disease Prediction Results
+========================================
+
+Image: test_images/image.JPG
+Label: tomatoe-healthy
+Probability: 0.0225
+Confidence: 0.9775
+------------------------------
