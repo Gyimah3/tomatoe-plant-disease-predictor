@@ -130,6 +130,4 @@ dmypy.json
 .pyre/
 
 # Project specific
-temp_uploads/
-*.keras
-models/*.keras 
+temp_uploads/ 
