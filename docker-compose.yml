@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  plant-disease-predictor:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./temp_uploads:/app/temp_uploads
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped 
