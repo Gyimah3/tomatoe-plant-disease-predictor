@@ -10,4 +10,6 @@ services:
       - ./temp_uploads:/app/temp_uploads
     environment:
       - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     restart: unless-stopped 

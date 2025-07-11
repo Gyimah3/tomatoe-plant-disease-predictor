@@ -5,6 +5,20 @@ import shutil
 import os
 from .predictor import get_predictor
 from uuid import uuid4
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import HumanMessage
+import base64
+import dotenv
+
+import dotenv
+dotenv.load_dotenv()
+key = os.getenv("GOOGLE_API_KEY")
+if key:
+    os.environ["GOOGLE_API_KEY"] = key
+else:
+    print("WARNING: GOOGLE_API_KEY is not set!")
+
+print("GOOGLE_API_KEY is:", os.environ.get("GOOGLE_API_KEY"))
 
 app = FastAPI(
     title="Plant Disease Predictor API",
@@ -44,8 +58,34 @@ def predict_image(file: UploadFile = File(...)):
         with open(temp_filename, 'wb') as buffer:
             shutil.copyfileobj(file.file, buffer)
         
+        # 1. Local model prediction
         predictor = get_predictor()
         result = predictor.predict(temp_filename)
+
+        # 2. Gemini (Google) image model for expert description
+        with open(temp_filename, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.0-flash",
+            temperature=0,
+            max_tokens=None,
+            timeout=None,
+            max_retries=2,
+        )
+        prompt = (
+            "You are a tomato plant disease expert. "
+            "Given the following image, if you detect a disease, provide a detailed description of the disease, its symptoms, and possible treatments. "
+            "If the tomato appears healthy, say so."
+        )
+        message = HumanMessage(
+            content=[
+                {"type": "text", "text": prompt},
+                {"type": "image_url", "image_url": f"data:image/png;base64,{encoded_image}"},
+            ]
+        )
+        gemini_result = llm.invoke([message])
+        # Add Gemini's description to the result
+        result["gemini_description"] = gemini_result.content
         return JSONResponse(content=result)
     except Exception as e:
         return JSONResponse(
