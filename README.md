@@ -179,6 +179,65 @@ Predict plant disease from an uploaded image.
 
 Visit `http://localhost:8000/docs` for interactive Swagger UI documentation.
 
+## 🧑‍🔬 Using the Traditional ML Model Instead of Gemini
+
+This project supports two modes for plant disease prediction:
+
+1. **Gemini (Google AI Vision)**: Uses a cloud-based LLM for rich, explainable, structured results (default in the API).
+2. **Traditional ML Model (TensorFlow/Keras)**: Uses a trained Convolutional Neural Network (CNN) for fast, private, and offline predictions.
+
+### Why Use the ML Model?
+- **No API keys or internet required**
+- **Runs locally and privately**
+- **Very fast inference**
+- **Great for experimentation and benchmarking**
+
+### How to Use the ML Model
+
+#### Command Line
+You can use the ML model directly from the command line:
+
+```bash
+python main.py --model models/tomaotoe_model1.keras --image test_images/sample.jpg
+```
+
+#### Batch Prediction
+```bash
+python main.py --model models/tomaotoe_model1.keras --directory test_images/
+```
+
+#### In Python Code
+```python
+from src.predictor import PlantDiseasePredictor
+
+predictor = PlantDiseasePredictor('models/tomaotoe_model1.keras')
+result = predictor.predict('test_images/sample.jpg')
+print(result)
+```
+
+### Switching the API to Use the ML Model
+If you want the FastAPI `/predict` endpoint to use the ML model instead of Gemini:
+- Replace the Gemini logic in `src/api.py` with the following lines:
+
+```python
+from .predictor import get_predictor
+...
+predictor = get_predictor()
+result = predictor.predict(temp_filename)
+return JSONResponse(content=result)
+```
+
+(See previous versions of this repo for the full implementation.)
+
+---
+
+**We encourage you to experiment with the trained ML model!**
+- Try it on your own images
+- Compare its results to Gemini
+- Use it for offline or private deployments
+
+If you have questions or want to contribute improvements to the ML model, please open an issue or pull request!
+
 ## 🐳 Deployment
 
 ### Docker Deployment
