@@ -103,7 +103,7 @@ def predict_image(file: UploadFile = File(...)):
             "- prevention_tips: list of strings\n"
             "- additional_notes: string or null\n"
             "If unsure, use 'unclear' or 'other' as appropriate. Do NOT use any other values for enum fields.\n"
-            "IMPORTANT: If this is NOT a tomato leaf, set health_status to 'not_applicable' and leave treatment/prevention recommendations empty."
+            "IMPORTANT: If this is NOT a tomato leaf, set health_status to 'not_applicable' and leave treatment/prevention recommendations empty... make additional notes extensive!"
         )
         message = HumanMessage(
             content=[
