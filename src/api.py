@@ -90,7 +90,7 @@ def predict_image(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, buffer)
         with open(temp_filename, "rb") as image_file:
             encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite")
         prompt = (
             "Analyze this image for tomato leaf health. Please provide the following fields in JSON, using ONLY the allowed values for each field:\n"
             "- is_tomato_leaf: 'tomato', 'not_tomato', 'unclear'\n"
